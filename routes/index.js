@@ -4,10 +4,9 @@ const { checkAuth } = require('../middleware/auth');
 const router = express.Router();
 
 const authRoutes = require('./auth');
-const lessonRoutes = require('./lesson');
-const teacherRoutes = require('./teacher');
-const studentRoutes = require('./student');
-const groupRoutes = require('./group');
+const usersRoutes = require('./users');
+const userRoutes = require('./user');
+const tasksRoutes = require('./tasks');
 
 const errorControllers = require('../controllers/error');
 
@@ -16,10 +15,9 @@ const errorControllers = require('../controllers/error');
  */
 router.use('/auth', authRoutes);
 router.use(checkAuth);
-router.use('/lesson', lessonRoutes);
-router.use('/teacher', teacherRoutes);
-router.use('/student', studentRoutes);
-router.use('/group', groupRoutes);
+router.use('/users', usersRoutes);
+router.use('/user', userRoutes);
+router.use('/tasks', tasksRoutes);
 
 router.use(errorControllers.errorHandler);
 router.use(errorControllers.notFoundRouteHandler);
