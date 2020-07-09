@@ -1,3 +1,5 @@
-console.log(require("./users")())
+module.exports = {
+  usersModel: require('./usersModel'),
+};
 
-
+require('./users');
