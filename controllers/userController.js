@@ -23,7 +23,7 @@ module.exports.updateInfo = async (req, res) => {
 };
 
 module.exports.getUsers = async (req, res) => {
-  const { users, error } = await usersModel.getUsers({ offset: req.params.offset});
+  const { users, error } = await usersModel.getUsers({ offset: req.params.offset });
   if (error) return render.custom(res, error.status, error.message);
 
   return render.success(res, { users });

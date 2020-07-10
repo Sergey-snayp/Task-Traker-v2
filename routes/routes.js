@@ -2,6 +2,7 @@ const { Router } = require('express');
 const {
   authController,
   userController,
+  tasksController,
 } = require('controllers');
 const { checkAuth } = require('utilities/operations');
 
@@ -19,9 +20,16 @@ authRoutes.route('/register').post(authController.checkLoginAndPassword, authCon
 
 apiRoutes.use(checkAuth);
 
-userRoutes.route('/delete/:id').delete(userController.userDelete);
-userRoutes.route('/:id').get(userController.getInfo);
-userRoutes.route('/update/:id').put(userController.updateInfo);
+userRoutes.route('/delete/:user_id').delete(userController.userDelete);
+userRoutes.route('/:user_id').get(userController.getInfo);
+userRoutes.route('/update/:user_id').put(userController.updateInfo);
 userRoutes.route('/get/:offset').get(userController.getUsers);
+
+tasksRoutes.route('/create/:user_id').post(tasksController.create);
+tasksRoutes.route('/edit/task/:task_id').put(tasksController.create);
+tasksRoutes.route('/edit/status/:task_id').put(tasksController.create);
+tasksRoutes.route('/edit/user/:task_id').put(tasksController.create);
+tasksRoutes.route('/delete/:task_id').delete(tasksController.create);
+tasksRoutes.route('/show/:task_id').delete(tasksController.create);
 
 module.exports = apiRoutes;

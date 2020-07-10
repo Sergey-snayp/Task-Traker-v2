@@ -1,4 +1,4 @@
-const client = require('../db');
+const client = require('../index');
 
 const createTableText = `
 CREATE TABLE IF NOT EXISTS users (
