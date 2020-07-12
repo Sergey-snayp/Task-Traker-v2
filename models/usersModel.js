@@ -2,17 +2,18 @@ const db = require('db');
 
 module.exports.getById = async (id) => {
   try {
-    return { user: (await db.query('SELECT * FROM users WHERE user_id = $1', [id])).rows[0] };
+    const { password, ...rest } = (await db.query('SELECT * FROM users WHERE user_id = $1', [id])).rows[0];
+    return { user: rest };
   } catch (error) {
-    return { error: error.message };
+    return { error };
   }
 };
 
-module.exports.deleteById = async (id) => {
+module.exports.deleteById = async (user_id) => {
   try {
-    return { user: (await db.query('DELETE FROM users WHERE user_id = $1', [id])) };
+    return { user: (await db.query('DELETE FROM users WHERE user_id = $1', [user_id])) };
   } catch (error) {
-    return { error: error.message };
+    return { error };
   }
 };
 
@@ -31,7 +32,7 @@ module.exports.updateById = async ({ id, data }) => {
 
 module.exports.getByLoginAndPasswordHash = async (login, password) => {
   try {
-    return { user: (await db.query(`SELECT * FROM users WHERE login = ${login} and password = ${password}`)).rows[0] };
+    return { user: (await db.query(`SELECT * FROM users WHERE login = '${login}' and password = '${password}'`)).rows[0] };
   } catch (error) {
     return { error: error.message };
   }
@@ -46,12 +47,12 @@ module.exports.getByLogin = async (login) => {
 };
 
 module.exports.insert = async ({
-  login, firstName, lastName, email, password,
+  login, first_name, last_name, email, passwordHash,
 }) => {
   try {
     return {
       user: (await db.query('INSERT INTO users (login, first_name, last_name, email, password) VALUES ($1, $2, $3, $4,$5)',
-        [login, firstName, lastName, email, password])),
+        [login, first_name, last_name, email, passwordHash])),
     };
   } catch (error) {
     return { error: error.message };
@@ -60,7 +61,8 @@ module.exports.insert = async ({
 
 module.exports.getUsers = async ({ offset, limit = 10 }) => {
   try {
-    return { users: (await db.query(`SELECT * FROM users OFFSET ${offset} LIMIT ${limit}`)).rows };
+    const usersSelect = (await db.query(`SELECT * FROM users OFFSET ${offset} LIMIT ${limit}`)).rows;
+    return { users: usersSelect.map((user) => { const { password, ...rest } = user; return rest; }) };
   } catch (error) {
     return { error: error.message };
   }

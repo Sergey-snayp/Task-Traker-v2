@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   title text,
   description text,
   status text,
-  author_id integer references users(user_id)
+  user_id integer references users(user_id) ON DELETE CASCADE
 );
 `;
 

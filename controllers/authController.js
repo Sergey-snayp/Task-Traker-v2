@@ -1,63 +1,50 @@
 const jwt = require('jsonwebtoken');
 const { hashFunc, generateJWT } = require('utilities/operations');
 const { usersModel } = require('models');
+const render = require('concerns/render');
+const validators = require('./validators');
 
-module.exports.checkLoginAndPassword = (req, res, next) => {
-  const { password, login } = req.body;
+module.exports.register = async (req, res) => {
+  const { params, validationError } = validators.validate(req.body, validators.authValidators.register);
+  if (validationError) return render.error(res, validationError);
 
-  if (!password || !login) {
-    res.status(400).json({
-      message: 'Login and password fields cant be empty',
+  const { user } = await usersModel.getByLogin(params.login);
+
+  if (user) {
+    render.error(res, {
+      message: 'This login has been already taken. Please try a new one',
+      data: { login: params.login },
     });
   }
-  req.login = login;
-  req.password = password;
-  next();
-};
-
-module.exports.register = async (req, res, next) => {
-  const { login, password } = req;
-  try {
-    const { user } = await usersModel.getByLogin(login);
-    if (user) {
-      res.status(409).json({
-        message: 'This login has been already taken. Please try a new one',
-        data: { login },
-      });
-    } else {
-      const passwordHash = hashFunc(password);
-      await usersModel.insert({ login, password: passwordHash });
-      res.json({
-        message: 'You are successfully registered. Please login to get your JWT',
-      });
-    }
-  } catch (err) {
-    next(err);
-  }
+  const passwordHash = hashFunc(params.password);
+  const { error } = await usersModel.insert({
+    ...params,
+    passwordHash,
+  });
+  if (error) return render.custom(res, error.status, error);
+  render.success(res, 'User successfully registered!');
 };
 
 module.exports.login = async (req, res, next) => {
-  const { login, password } = req;
-  const passwordHash = hashFunc(password);
-  try {
-    const futureUser = await usersModel.getByLoginAndPasswordHash({ login, password: passwordHash });
-    if (futureUser) {
-      req.futureUser = futureUser;
-      next();
-    } else {
-      res.status(400).json({
-        message: 'Invalid login or password',
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    next(err);
+  const { params, validationError } = validators.validate(req.body, validators.authValidators.login);
+  if (validationError) return render.error(res, validationError);
+
+  const passwordHash = hashFunc(params.password);
+  const { user, error } = await usersModel.getByLoginAndPasswordHash(params.login, passwordHash);
+  if (error) return render.custom(res, error.status, error);
+
+  if (user) {
+    req.futureUser = user;
+    next();
+  } else {
+    return render.error(res, {
+      message: 'Invalid login or password',
+    });
   }
 };
 
 module.exports.responseOnSuccessLogin = (req, res) => {
   const token = generateJWT(req.futureUser);
-  console.log('req.futureUser:', req.futureUser);
   const decodedToken = jwt.decode(token);
 
   const response = {
