@@ -1,118 +1,375 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "API for Crypto Battle",
+    "description": "API for Task-Traker",
     "version": "1.0.0",
-    "title": "Crypto Battle API",
+    "title": "Task-Traker-v2",
     "contact": {
-      "email": "borysan@wizardsdev.com"
+      "email": "sergeypronyuk@gmail.com"
     }
   },
   "host": "localhost:3001",
   "paths": {
-    "/api/test1": {
-      "get": {
+    "/api/auth/registration": {
+      "post": {
         "tags": [
-          "Test"
+          "Authentication"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "distance",
+            "name": "Registration form.",
             "in": "body",
-            "description": "Distance set for conversion. Accessible values: 'm', 'cm', 'in', 'ft', 'yd', 'km'",
+            "description": "Data required for registration",
             "schema": {
               "example": {
-                "distance": {
-                  "unit": "m",
-                  "value": 0.5
-                }
+                  "login": "SnaypSergey",
+                  "first_name": "Sergey",
+                  "last_name": "Pronyuk",
+                  "email": "sergeypronyuk@gmail.com",
+                  "password": "12345678s"
               },
             "required": true
             }
-          },
-          {
-            "name": "convert_to",
-            "in": "body",
-            "description": "Distance set for conversion. Accessible values: 'm', 'cm', 'in', 'ft', 'yd', 'km'",
-            "schema": {
-              "example": {
-                "convert_to": "ft"
-              }
-            },
-            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "JSON object containing the obtained distance value, rounded to\nhundredths, as well as the designation of the appropriate unit of measurement.",
+            "description": "Returns a successful operation result.",
             "schema": {
               "example": {
-                "unit": "ft",
-                "value": 1.64
+                "result": "User successfully registered!"
+              }
+            }
+          },
+          "422": {
+            "description": "When an error is found in the data, returns an error.",
+            "schema": {
+              "example": {
+                "success": false,
+                "error": {
+                  "_original": {
+                    "login": "SnaypTes3t2",
+                    "firs2t_name": "Alexandra",
+                    "last_name": "Razumovskaya",
+                    "email": "sasha@gmail.com",
+                    "password": "7657199sadasd"
+                  },
+                  "details": [
+                    {
+                      "message": "\"first_name\" is required",
+                      "path": [
+                        "first_name"
+                      ],
+                      "type": "any.required",
+                      "context": {
+                        "label": "first_name",
+                        "key": "first_name"
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         }
       }
     },
-    "/api/test2": {
-      "get": {
+    "/api/auth/login": {
+      "post": {
         "tags": [
-          "Test"
+          "Authentication"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "data",
+            "name": "Login form",
             "in": "body",
-            "description": "Sort Data",
+            "description": "Login Data",
             "schema": {
               "example": {
-                "distance": {
-                  "data": [{"user": "mike@mail.com", "rating": 20, "disabled": false},
-                  {"user": "greg@mail.com", "rating": 14, "disabled": false},
-                  {"user": "john@mail.com", "rating": 25, "disabled": true}]
-                }
+                "login": "SnaypSergey",
+                "password": "12345678s"
               },
               "required": true
             }
-          },
-          {
-            "name": "conditions",
-            "in": "body",
-            "description": "Sort rule",
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "In case of entry error",
             "schema": {
               "example": {
-                "condition": {
-                  "exclude": [{
-                    "disabled": true}],
-                  "sort_by": ["rating"]
+                "success": false,
+                "error": {
+                  "message": "Invalid login or password"
                 }
               }
-            },
+            }
+          },
+          "400": {
+            "description": "Upon successful login",
+            "schema": {
+              "example": {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTQ2MjYzMDcsImV4cCI6MTU5NzIxODMwN30.uyvWuzepWuClI4hLtDmJQxKk9FGGwvwc50MVbDEyOFI",
+                "user": {
+                  "iat": 1594626307,
+                  "exp": 1597218307
+                }
+              }
+              }
+            }
+        }
+      }
+    },
+    "/api/user/update": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "params",
+            "type": "number",
+            "description": "User id",
+            "required": true
+          },
+          {
+            "name": "login",
+            "in": "body",
+            "type": "string",
+            "description": "User new login",
+            "schema": {
+              "example": {
+                "login": "SnaypTest"
+              }
+            }
+          },
+          {
+            "name": "first_name",
+            "in": "body",
+            "type": "string",
+            "description": "User new name",
+            "schema": {
+              "example": {
+                "first_name": "Sergey"
+              }
+            }
+          },
+          {
+            "name": "last_name",
+            "in": "body",
+            "type": "string",
+            "description": "User new surname",
+            "schema": {
+              "example": {
+                "first_name": "Pronyuk"
+              }
+            }
+          },
+          {
+            "name": "email",
+            "in": "body",
+            "type": "string",
+            "description": "User new email",
+            "schema": {
+              "example": {
+                "first_name": "asda@gmail.com"
+              }
+            }
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "type": "string",
+            "description": "User new password",
+            "schema": {
+              "example": {
+                "first_name": "1234567890"
+              }
+            }
+          },
+          {
+            "name": "Example",
+            "in": "body",
+            "description": "User new password",
+            "schema": {
+              "example": {
+                "login": "TestSnayp",
+                "first_name": "Natasha",
+                "last_name": "Belorus",
+                "email": "sda@gmail.com",
+                "password": "newpassword"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "user": {
+                  "command": "UPDATE",
+                  "rowCount": 1,
+                  "oid": null,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Data entry error.",
+            "schema": {
+              "example": {
+                "user": {
+                  "command": "UPDATE",
+                  "rowCount": 1,
+                  "oid": null,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/delete": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "params",
+            "type": "number",
+            "description": "User id",
             "required": true
           }
         ],
         "responses": {
-          "200": {
-            "description": "JSON object with data obtained after applying the processing condition (result):\n",
+          "400": {
+            "description": "Successful result.",
             "schema": {
               "example": {
-                "result": [
+                "user": {
+                  "command": "DELETE",
+                  "rowCount": 1,
+                  "oid": null,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "_types": {
+                    },
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "params",
+            "type": "number",
+            "description": "User id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "user": {
+                  "user_id": 2,
+                  "login": "SnaypTes3t2",
+                  "first_name": "Alexandra",
+                  "last_name": "Razumovskaya",
+                  "email": "sasha@gmail.com"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/all": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "params",
+            "type": "number",
+            "description": "Data pagination",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "users": [
                   {
-                    "user": "greg@mail.com",
-                    "rating": 14,
-                    "disabled": false
+                    "user_id": 2,
+                    "login": "test1",
+                    "first_name": "Alexandra",
+                    "last_name": "Razumovskaya",
+                    "email": "sasha@gmail.com"
                   },
                   {
-                    "user": "mike@mail.com",
-                    "rating": 20,
-                    "disabled": false
+                    "user_id": 7,
+                    "login": "test2",
+                    "first_name": "Sergey",
+                    "last_name": "Pronyuk",
+                    "email": "sergey@gmail.com"
                   }
                 ]
               }
@@ -121,80 +378,416 @@
         }
       }
     },
-    "/api/test3": {
-      "get": {
+    "/api/task/create": {
+      "post": {
         "tags": [
-          "Test"
+          "Task"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "set",
+            "name": "user_id",
+            "in": "params",
+            "type": "number",
+            "description": "User id",
+            "required": true
+          },
+          {
+            "name": "title",
             "in": "body",
-            "description": "Arbitrary set of natural numbers",
+            "type": "string",
+            "description": "Task title",
+            "required": true,
             "schema": {
               "example": {
-                "set": [4,5,6,7,8]
-              },
-              "required": true
+                "title": "Title example"
+              }
+            }
+          },
+          {
+            "name": "description",
+            "in": "body",
+            "type": "string",
+            "description": "Task description",
+            "schema": {
+              "example": {
+                "description": "Description example"
+              }
+            }
+          },
+          {
+            "name": "status",
+            "in": "body",
+            "description": "Task description",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["View", "In Progress", "Done"],
+              "example": {
+                "status": "Description example"
+              }
+            }
+          },
+          {
+            "name": "Example",
+            "in": "body",
+            "schema": {
+              "example": {
+                "title": "Hello world",
+                "description": "Description",
+                "status": "View"
+              }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "JSON object format containing two result sets (set_1 and set_2).",
+          "422": {
+            "description": "User not found.",
             "schema": {
               "example": {
-                "set_1": [7,8],
-                "set_2": [4,5,6]
+                "success": false,
+                "error": {
+                  "length": 243,
+                  "name": "error",
+                  "severity": "ERROR",
+                  "code": "23503",
+                  "detail": "Key (user_id)=(13) is not present in table \"users\".",
+                  "schema": "public",
+                  "table": "tasks",
+                  "constraint": "tasks_user_id_fkey",
+                  "file": "ri_triggers.c",
+                  "line": "3266",
+                  "routine": "ri_ReportViolation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "user": {
+                  "command": "INSERT",
+                  "rowCount": 1,
+                  "oid": 0,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "_types": {
+                    },
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
               }
             }
           }
         }
       }
     },
-    "/api/test4": {
-      "get": {
+    "/api/task/edit/context": {
+      "put": {
         "tags": [
-          "Test"
+          "Task"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "corrections",
+            "name": "task_id",
+            "in": "params",
+            "type": "number",
+            "description": "Task id",
+            "required": true
+          },
+          {
+            "name": "title",
             "in": "body",
-            "description": "Speed increment to be achieved",
+            "type": "string",
+            "description": "Task title",
             "schema": {
               "example": {
-                "corrections": [1,12,7,1]
-              },
-              "required": true
+                "title": "Title example"
+              }
             }
           },
           {
-            "name": "cells",
+            "name": "description",
             "in": "body",
-            "description": "list of available capsules",
+            "type": "string",
+            "description": "Task description",
             "schema": {
               "example": {
-                "set": [8,4,6,2,2]
-              },
-              "required": true
+                "description": "Description example"
+              }
+            }
+          },
+          {
+            "name": "Example",
+            "in": "body",
+            "schema": {
+              "example": {
+                "title": "New Hello world",
+                "description": "Very interesting information"
+              }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "JSON object containing the sequence of using capsules for the first\nengine (main engine); capsule use sequence for the second\nengine (sec_solution); and the total obtained during the rotation of the speed (delta_velocity).",
+          "400": {
+            "description": "Successful result.",
             "schema": {
               "example": {
-                "main_thruster": [0,8,6,0],
-                "sec_thruster": [2,4,2,0],
-                "delta_velocity": 18
+                "user": {
+                  "command": "UPDATE",
+                  "rowCount": 1,
+                  "oid": 0,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "_types": {
+                    },
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task/edit/status": {
+      "put": {
+        "tags": [
+          "Task"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "params",
+            "type": "number",
+            "description": "Task id",
+            "required": true
+          },
+          {
+            "name": "status",
+            "in": "body",
+            "description": "Task description",
+            "schema": {
+              "type": "string",
+              "enum": ["View", "In Progress", "Done"],
+              "example": {
+                "status": "Description example"
+              }
+            }
+          },
+          {
+            "name": "Example",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "example": {
+                "status": "Done"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "user": {
+                  "command": "UPDATE",
+                  "rowCount": 1,
+                  "oid": 0,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "_types": {
+                    },
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Wrong data.",
+            "schema": {
+              "example": {
+                "success": false,
+                "error": {
+                  "_original": {
+                    "status": "sd",
+                    "task_id": "3"
+                  },
+                  "details": [
+                    {
+                      "message": "\"status\" must be one of [View, In Progress, Done]",
+                      "path": [
+                        "status"
+                      ],
+                      "type": "any.only",
+                      "context": {
+                        "valids": [
+                          "View",
+                          "In Progress",
+                          "Done"
+                        ],
+                        "label": "status",
+                        "value": "sd",
+                        "key": "status"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task/edit/user": {
+      "put": {
+        "tags": [
+          "Task"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "params",
+            "type": "number",
+            "description": "Task id",
+            "required": true
+          },
+          {
+            "name": "status",
+            "in": "body",
+            "description": "Task description",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["View", "In Progress", "Done"],
+              "example": {
+                "status": "Description example"
+              }
+            }
+          },
+          {
+            "name": "Example",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "example": {
+                "status": "Done"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "user": {
+                  "command": "UPDATE",
+                  "rowCount": 1,
+                  "oid": 0,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "_types": {
+                    },
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task/sort_by": {
+      "put": {
+        "tags": [
+          "Task"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "params",
+            "type": "number",
+            "description": "Task id",
+            "required": true
+          },
+          {
+            "name": "status",
+            "in": "body",
+            "description": "Task description",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["View", "In Progress", "Done"],
+              "example": {
+                "status": "Description example"
+              }
+            }
+          },
+          {
+            "name": "Example",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "example": {
+                "status": "Done"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "user": {
+                  "command": "UPDATE",
+                  "rowCount": 1,
+                  "oid": 0,
+                  "rows": [],
+                  "fields": [],
+                  "_types": {
+                    "_types": {
+                    },
+                    "text": {},
+                    "binary": {}
+                  },
+                  "RowCtor": null,
+                  "rowAsArray": false
+                }
               }
             }
           }

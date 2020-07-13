@@ -1,8 +1,8 @@
 const db = require('db');
 
-module.exports.getById = async (id) => {
+module.exports.getById = async (user_id) => {
   try {
-    const { password, ...rest } = (await db.query('SELECT * FROM users WHERE user_id = $1', [id])).rows[0];
+    const { password, ...rest } = (await db.query('SELECT * FROM users WHERE user_id = $1', [user_id])).rows[0];
     return { user: rest };
   } catch (error) {
     return { error };
@@ -17,14 +17,14 @@ module.exports.deleteById = async (user_id) => {
   }
 };
 
-module.exports.updateById = async ({ id, data }) => {
+module.exports.updateById = async ({ user_id, ...data }) => {
   let updData = '';
   for (const key in data) {
     updData += `${key} = '${data[key]}', `;
   }
   updData = updData.slice(0, -2);
   try {
-    return { user: (await db.query(`UPDATE users SET ${updData} WHERE user_id = ${id}`)) };
+    return { user: (await db.query(`UPDATE users SET ${updData} WHERE user_id = ${user_id}`)) };
   } catch (error) {
     return { error: error.message };
   }

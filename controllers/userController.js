@@ -1,14 +1,15 @@
 const render = require('concerns/render');
 const { usersModel } = require('models');
 const validators = require('controllers/validators');
+const { hashFunc } = require('utilities/operations');
 
 module.exports.updateInfo = async (req, res) => {
   req.body.user_id = req.params.user_id;
   const { params, validationError } = validators.validate(req.body, validators.userValidators.updateInfo);
 
   if (validationError) return render.error(res, validationError);
-
-  const { user, error } = await usersModel.updateById({ user_id: params.user_id, data: req.body });
+  params.password = hashFunc(params.password);
+  const { user, error } = await usersModel.updateById(params);
   if (error) return render.error(res, error.message);
 
   return render.success(res, { user });
