@@ -66,3 +66,4 @@ ecosystem.config.js
 .next
 
 package-lock.json
+/node_modules/
