@@ -8,7 +8,8 @@ module.exports.register = async (req, res) => {
   const { params, validationError } = validators.validate(req.body, validators.authValidators.register);
   if (validationError) return render.error(res, validationError);
 
-  const { user } = await usersModel.getByLogin(params.login);
+  const { user, error: errorDb } = await usersModel.getByLogin(params.login);
+  if(errorDb) return render.error(res, errorDb)
 
   if (user) {
     render.error(res, {
