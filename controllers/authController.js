@@ -4,7 +4,7 @@ const { usersModel } = require('models');
 const render = require('concerns/render');
 const validators = require('./validators');
 
-module.exports.register = async (req, res) => {
+const register = async (req, res) => {
   const { params, validationError } = validators.validate(req.body, validators.authValidators.register);
   if (validationError) return render.error(res, validationError);
 
@@ -26,7 +26,7 @@ module.exports.register = async (req, res) => {
   render.success(res, 'User successfully registered!');
 };
 
-module.exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
   const { params, validationError } = validators.validate(req.body, validators.authValidators.login);
   if (validationError) return render.error(res, validationError);
 
@@ -44,7 +44,7 @@ module.exports.login = async (req, res, next) => {
   }
 };
 
-module.exports.responseOnSuccessLogin = (req, res) => {
+const responseOnSuccessLogin = (req, res) => {
   const token = generateJWT(req.futureUser);
   const decodedToken = jwt.decode(token);
 
@@ -53,4 +53,10 @@ module.exports.responseOnSuccessLogin = (req, res) => {
     user: decodedToken,
   };
   res.json(response);
+};
+
+module.exports = {
+  register,
+  login,
+  responseOnSuccessLogin,
 };

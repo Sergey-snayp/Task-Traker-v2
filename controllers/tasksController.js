@@ -2,7 +2,7 @@ const render = require('concerns/render');
 const { tasksModel } = require('models');
 const validators = require('./validators');
 
-module.exports.create = async (req, res) => {
+const create = async (req, res) => {
   req.body.user_id = req.params.user_id;
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.createTask);
   if (validationError) return render.error(res, validationError);
@@ -13,7 +13,7 @@ module.exports.create = async (req, res) => {
   return render.success(res, { task });
 };
 
-module.exports.editContextTask = async (req, res) => {
+const editContextTask = async (req, res) => {
   req.body.task_id = req.params.task_id;
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.editContextTask);
   if (validationError) return render.error(res, validationError);
@@ -24,7 +24,7 @@ module.exports.editContextTask = async (req, res) => {
   return render.success(res, { task });
 };
 
-module.exports.editTaskStatus = async (req, res) => {
+const editTaskStatus = async (req, res) => {
   req.body.task_id = req.params.task_id;
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.editStatusTask);
   if (validationError) return render.error(res, validationError);
@@ -35,7 +35,7 @@ module.exports.editTaskStatus = async (req, res) => {
   return render.success(res, { task });
 };
 
-module.exports.editTaskUser = async (req, res) => {
+const editTaskUser = async (req, res) => {
   req.body.task_id = req.params.task_id;
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.editUserTask);
   if (validationError) return render.error(res, validationError);
@@ -46,7 +46,7 @@ module.exports.editTaskUser = async (req, res) => {
   return render.success(res, { task });
 };
 
-module.exports.sortBy = async (req, res) => {
+const sortBy = async (req, res) => {
   req.body.task_id = req.params.task_id;
   const { params, validationError } = validators.validate(req.query, validators.taskValidators.sortBy);
   if (validationError) return render.error(res, validationError);
@@ -56,7 +56,7 @@ module.exports.sortBy = async (req, res) => {
   return render.success(res, { tasks });
 };
 
-module.exports.taskDelete = async (req, res) => {
+const taskDelete = async (req, res) => {
   const { params, validationError } = validators.validate(req.params, validators.taskValidators.deleteTask);
   if (validationError) return render.error(res, validationError);
 
@@ -64,4 +64,13 @@ module.exports.taskDelete = async (req, res) => {
   if (error) return render.error(res, error);
 
   return render.success(res, { task });
+};
+
+module.exports = {
+  taskDelete,
+  sortBy,
+  create,
+  editContextTask,
+  editTaskStatus,
+  editTaskUser,
 };

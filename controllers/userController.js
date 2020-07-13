@@ -3,7 +3,7 @@ const { usersModel } = require('models');
 const validators = require('controllers/validators');
 const { hashFunc } = require('utilities/operations');
 
-module.exports.updateInfo = async (req, res) => {
+const updateInfo = async (req, res) => {
   req.body.user_id = req.params.user_id;
   const { params, validationError } = validators.validate(req.body, validators.userValidators.updateInfo);
 
@@ -15,7 +15,7 @@ module.exports.updateInfo = async (req, res) => {
   return render.success(res, { user });
 };
 
-module.exports.userDelete = async (req, res) => {
+const userDelete = async (req, res) => {
   const { params, validationError } = validators.validate(req.params, validators.userValidators.userId);
   if (validationError) return render.error(res, validationError);
 
@@ -25,7 +25,7 @@ module.exports.userDelete = async (req, res) => {
   return render.success(res, { user });
 };
 
-module.exports.getInfo = async (req, res) => {
+const getInfo = async (req, res) => {
   const { params, validationError } = validators.validate(req.params, validators.userValidators.userId);
   if (validationError) return render.error(res, validationError);
 
@@ -35,7 +35,7 @@ module.exports.getInfo = async (req, res) => {
   return render.success(res, { user });
 };
 
-module.exports.getUsers = async (req, res) => {
+const getUsers = async (req, res) => {
   const { params, validationError } = validators.validate(req.params, validators.userValidators.getUsers);
   if (validationError) return render.error(res, validationError);
 
@@ -43,4 +43,11 @@ module.exports.getUsers = async (req, res) => {
   if (error) return render.error(res, error.message);
 
   return render.success(res, { users });
+};
+
+module.exports = {
+  getUsers,
+  getInfo,
+  userDelete,
+  updateInfo,
 };
