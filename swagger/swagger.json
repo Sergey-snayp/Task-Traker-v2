@@ -543,7 +543,7 @@
             "description": "Successful result.",
             "schema": {
               "example": {
-                "user": {
+                "task": {
                   "command": "UPDATE",
                   "rowCount": 1,
                   "oid": 0,
@@ -608,7 +608,7 @@
             "description": "Successful result.",
             "schema": {
               "example": {
-                "user": {
+                "task": {
                   "command": "UPDATE",
                   "rowCount": 1,
                   "oid": 0,
@@ -707,7 +707,7 @@
             "description": "Successful result.",
             "schema": {
               "example": {
-                "user": {
+                "task": {
                   "command": "UPDATE",
                   "rowCount": 1,
                   "oid": 0,
@@ -729,7 +729,60 @@
       }
     },
     "/api/task/sort_by": {
-      "put": {
+      "get": {
+        "tags": [
+          "Task"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sort_type",
+            "in": "params",
+            "type": "number",
+            "description": "What fields to sort by",
+            "enum": ["status", "user_id"],
+            "required": true
+          },
+          {
+            "name": "sortdirection",
+            "in": "params",
+            "type": "number",
+            "description": "Descending or Ascending result data",
+            "enum": ["asc", "desc"],
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Successful result.",
+            "schema": {
+              "example": {
+                "tasks": [
+                  {
+                    "id": 3,
+                    "title": "version2",
+                    "description": "Very match",
+                    "status": "Done",
+                    "user_id": 2
+                  },
+                  {
+                    "id": 4,
+                    "title": "Smash",
+                    "description": "Very match cloud",
+                    "status": "In Progress",
+                    "user_id": 2
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task/delete": {
+      "delete": {
         "tags": [
           "Task"
         ],
@@ -741,31 +794,8 @@
             "name": "task_id",
             "in": "params",
             "type": "number",
-            "description": "Task id",
+            "description": "Task id to be deleted",
             "required": true
-          },
-          {
-            "name": "status",
-            "in": "body",
-            "description": "Task description",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": ["View", "In Progress", "Done"],
-              "example": {
-                "status": "Description example"
-              }
-            }
-          },
-          {
-            "name": "Example",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "example": {
-                "status": "Done"
-              }
-            }
           }
         ],
         "responses": {
@@ -773,15 +803,13 @@
             "description": "Successful result.",
             "schema": {
               "example": {
-                "user": {
-                  "command": "UPDATE",
-                  "rowCount": 1,
-                  "oid": 0,
+                "task": {
+                  "command": "DELETE",
+                  "rowCount": 0,
+                  "oid": null,
                   "rows": [],
                   "fields": [],
                   "_types": {
-                    "_types": {
-                    },
                     "text": {},
                     "binary": {}
                   },

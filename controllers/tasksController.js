@@ -7,10 +7,10 @@ module.exports.create = async (req, res) => {
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.createTask);
   if (validationError) return render.error(res, validationError);
 
-  const { user, error } = await tasksModel.insert(params);
+  const { task, error } = await tasksModel.insert(params);
   if (error) return render.error(res, error);
 
-  return render.success(res, { user });
+  return render.success(res, { task });
 };
 
 module.exports.editContextTask = async (req, res) => {
@@ -18,10 +18,10 @@ module.exports.editContextTask = async (req, res) => {
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.editContextTask);
   if (validationError) return render.error(res, validationError);
 
-  const { user, error } = await tasksModel.updateById(params);
+  const { task, error } = await tasksModel.updateById(params);
   if (error) return render.error(res, error);
 
-  return render.success(res, { user });
+  return render.success(res, { task });
 };
 
 module.exports.editTaskStatus = async (req, res) => {
@@ -29,10 +29,10 @@ module.exports.editTaskStatus = async (req, res) => {
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.editStatusTask);
   if (validationError) return render.error(res, validationError);
 
-  const { user, error } = await tasksModel.updateById(params);
+  const { task, error } = await tasksModel.updateById(params);
   if (error) return render.error(res, error);
 
-  return render.success(res, { user });
+  return render.success(res, { task });
 };
 
 module.exports.editTaskUser = async (req, res) => {
@@ -40,10 +40,10 @@ module.exports.editTaskUser = async (req, res) => {
   const { params, validationError } = validators.validate(req.body, validators.taskValidators.editUserTask);
   if (validationError) return render.error(res, validationError);
 
-  const { user, error } = await tasksModel.updateById(params);
+  const { task, error } = await tasksModel.updateById(params);
   if (error) return render.error(res, error);
 
-  return render.success(res, { user });
+  return render.success(res, { task });
 };
 
 module.exports.sortBy = async (req, res) => {
@@ -51,17 +51,17 @@ module.exports.sortBy = async (req, res) => {
   const { params, validationError } = validators.validate(req.query, validators.taskValidators.sortBy);
   if (validationError) return render.error(res, validationError);
 
-  const { user, error } = await tasksModel.sortBy(params.sort_type, params.sortdirection);
+  const { tasks, error } = await tasksModel.sortBy(params.sort_type, params.sortdirection);
   if (error) return render.error(res, error);
-  return render.success(res, { user });
+  return render.success(res, { tasks });
 };
 
 module.exports.taskDelete = async (req, res) => {
   const { params, validationError } = validators.validate(req.params, validators.taskValidators.deleteTask);
   if (validationError) return render.error(res, validationError);
 
-  const { user, error } = await tasksModel.deleteById(params.task_id);
+  const { task, error } = await tasksModel.deleteById(params.task_id);
   if (error) return render.error(res, error);
 
-  return render.success(res, { user });
+  return render.success(res, { task });
 };
