@@ -1,6 +1,6 @@
 const db = require('db');
 
-module.exports.insert = async ({
+const insert = async ({
   title, description, status, user_id,
 }) => {
   try {
@@ -13,7 +13,7 @@ module.exports.insert = async ({
   }
 };
 
-module.exports.updateById = async ({ task_id, ...data }) => {
+const updateById = async ({ task_id, ...data }) => {
   let updData = '';
   for (const key in data) {
     updData += `${key} = '${data[key]}', `;
@@ -26,7 +26,7 @@ module.exports.updateById = async ({ task_id, ...data }) => {
   }
 };
 
-module.exports.deleteById = async (id) => {
+const deleteById = async (id) => {
   try {
     return { task: (await db.query('DELETE FROM tasks WHERE id = $1', [id])) };
   } catch (error) {
@@ -34,11 +34,18 @@ module.exports.deleteById = async (id) => {
   }
 };
 
-module.exports.sortBy = async (sort_type, sortdirection = 'asc') => {
+const sortBy = async (sort_type, sortdirection = 'asc') => {
   try {
     console.log(`SELECT * FROM tasks ORDER BY ${sort_type} ${sortdirection}`);
     return { tasks: (await db.query(`SELECT * FROM tasks ORDER BY ${sort_type} ${sortdirection}`)).rows };
   } catch (error) {
     return { error };
   }
+};
+
+module.exports = {
+  insert,
+  sortBy,
+  updateById,
+  deleteById,
 };

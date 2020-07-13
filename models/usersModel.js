@@ -1,6 +1,6 @@
 const db = require('db');
 
-module.exports.getById = async (user_id) => {
+const getById = async (user_id) => {
   try {
     const { password, ...rest } = (await db.query('SELECT * FROM users WHERE user_id = $1', [user_id])).rows[0];
     return { user: rest };
@@ -9,7 +9,7 @@ module.exports.getById = async (user_id) => {
   }
 };
 
-module.exports.deleteById = async (user_id) => {
+const deleteById = async (user_id) => {
   try {
     return { user: (await db.query('DELETE FROM users WHERE user_id = $1', [user_id])) };
   } catch (error) {
@@ -17,7 +17,7 @@ module.exports.deleteById = async (user_id) => {
   }
 };
 
-module.exports.updateById = async ({ user_id, ...data }) => {
+const updateById = async ({ user_id, ...data }) => {
   let updData = '';
   for (const key in data) {
     updData += `${key} = '${data[key]}', `;
@@ -30,7 +30,7 @@ module.exports.updateById = async ({ user_id, ...data }) => {
   }
 };
 
-module.exports.getByLoginAndPasswordHash = async (login, password) => {
+const getByLoginAndPasswordHash = async (login, password) => {
   try {
     return { user: (await db.query(`SELECT * FROM users WHERE login = '${login}' and password = '${password}'`)).rows[0] };
   } catch (error) {
@@ -38,7 +38,7 @@ module.exports.getByLoginAndPasswordHash = async (login, password) => {
   }
 };
 
-module.exports.getByLogin = async (login) => {
+const getByLogin = async (login) => {
   try {
     return { user: (await db.query('SELECT * FROM users WHERE login = $1', [login])).rows[0] };
   } catch (error) {
@@ -46,7 +46,7 @@ module.exports.getByLogin = async (login) => {
   }
 };
 
-module.exports.insert = async ({
+const insert = async ({
   login, first_name, last_name, email, passwordHash,
 }) => {
   try {
@@ -59,11 +59,21 @@ module.exports.insert = async ({
   }
 };
 
-module.exports.getUsers = async ({ offset, limit = 10 }) => {
+const getUsers = async ({ offset, limit = 10 }) => {
   try {
     const usersSelect = (await db.query(`SELECT * FROM users OFFSET ${offset} LIMIT ${limit}`)).rows;
     return { users: usersSelect.map((user) => { const { password, ...rest } = user; return rest; }) };
   } catch (error) {
     return { error: error.message };
   }
+};
+
+module.exports = {
+  getUsers,
+  insert,
+  getByLogin,
+  getByLoginAndPasswordHash,
+  updateById,
+  deleteById,
+  getById,
 };
