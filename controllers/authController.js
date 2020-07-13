@@ -9,7 +9,7 @@ module.exports.register = async (req, res) => {
   if (validationError) return render.error(res, validationError);
 
   const { user, error: errorDb } = await usersModel.getByLogin(params.login);
-  if(errorDb) return render.error(res, errorDb)
+  if (errorDb) return render.error(res, errorDb);
 
   if (user) {
     render.error(res, {
