@@ -12,7 +12,7 @@ const register = async (req, res) => {
   if (errorDb) return render.error(res, errorDb);
 
   if (user) {
-    render.error(res, {
+    return render.error(res, {
       message: 'This login has been already taken. Please try a new one',
       data: { login: params.login },
     });
@@ -32,7 +32,7 @@ const login = async (req, res, next) => {
 
   const passwordHash = hashFunc(params.password);
   const { user, error } = await usersModel.getByLoginAndPasswordHash(params.login, passwordHash);
-  if (error) return render.custom(res, error.status, error);
+  if (error) return render.error(res, error);
 
   if (user) {
     req.futureUser = user;

@@ -26,7 +26,7 @@ const updateById = async ({ user_id, ...data }) => {
   try {
     return { user: (await db.query(`UPDATE users SET ${updData} WHERE user_id = ${user_id}`)) };
   } catch (error) {
-    return { error: error.message };
+    return { error };
   }
 };
 
@@ -34,7 +34,7 @@ const getByLoginAndPasswordHash = async (login, password) => {
   try {
     return { user: (await db.query(`SELECT * FROM users WHERE login = '${login}' and password = '${password}'`)).rows[0] };
   } catch (error) {
-    return { error: error.message };
+    return { error };
   }
 };
 
@@ -55,7 +55,7 @@ const insert = async ({
         [login, first_name, last_name, email, passwordHash])),
     };
   } catch (error) {
-    return { error: error.message };
+    return { error };
   }
 };
 
@@ -64,7 +64,7 @@ const getUsers = async ({ offset, limit = 10 }) => {
     const usersSelect = (await db.query(`SELECT * FROM users OFFSET ${offset} LIMIT ${limit}`)).rows;
     return { users: usersSelect.map((user) => { const { password, ...rest } = user; return rest; }) };
   } catch (error) {
-    return { error: error.message };
+    return { error };
   }
 };
 

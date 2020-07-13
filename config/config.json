@@ -2,6 +2,15 @@
   "development": {
     "DB_USER": "postgres",
     "DB_HOST": "localhost",
+    "DB_DATABASE": "Task-Traker-v2",
+    "DB_PASSWORD": "1111",
+    "DB_PORT": 5432,
+    "SALT": "supersecret,rlv,d;lvdf,",
+    "JWT_SECRET": "super-secret.ksklslmfskmlvfmkl"
+  },
+  "test": {
+    "DB_USER": "postgres",
+    "DB_HOST": "localhost",
     "DB_DATABASE": "testdb",
     "DB_PASSWORD": "1111",
     "DB_PORT": 5432,
