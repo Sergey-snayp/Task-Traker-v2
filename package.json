@@ -23,7 +23,7 @@
     "pgtools": "^0.3.0",
     "pug": "2.0.0-beta11",
     "swagger-ui-express": "^4.1.4",
-    "underscore": "^1.10.2"
+    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "bson": "^4.0.4",
